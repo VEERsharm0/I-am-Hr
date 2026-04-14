@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Briefcase } from 'lucide-react';
-import './Login.css'; // Reusing the same styles as Login
+import './Login.css';
 
 const Signup = () => {
   const { signup } = useAuth();
@@ -29,14 +29,28 @@ const Signup = () => {
     setLoading(true);
 
     try {
+      // Basic validation
+      if (!fullName.trim()) {
+        throw new Error('Please enter your full name');
+      }
+      if (!email.trim()) {
+        throw new Error('Please enter your email');
+      }
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
       await signup(email, password, role, fullName);
+
+      // Navigate after successful signup
       if (role === 'recruiter') {
         navigate('/recruiter');
       } else {
         navigate('/jobs');
       }
     } catch (err) {
-      setError(err.message || 'Failed to create an account');
+      console.error('Signup error:', err); // Debug log
+      setError(err.message || 'Failed to create an account. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -68,7 +82,19 @@ const Signup = () => {
           </button>
         </div>
 
-        {error && <div className="auth-error" style={{ color: 'red', marginTop: '1rem', textAlign: 'center' }}>{error}</div>}
+        {error && (
+          <div className="auth-error" style={{
+            color: '#ef4444',
+            margin: '1rem 0',
+            padding: '0.75rem',
+            background: 'rgba(239, 68, 68, 0.1)',
+            borderRadius: '8px',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSignup} className="login-form">
           <div className="form-group">
@@ -80,8 +106,10 @@ const Signup = () => {
               placeholder="John Doe"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              disabled={loading}
             />
           </div>
+
           <div className="form-group">
             <label>Email Address</label>
             <input
@@ -91,27 +119,44 @@ const Signup = () => {
               placeholder={role === 'seeker' ? "john@example.com" : "hr@company.com"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
+
           <div className="form-group">
             <label>Password</label>
             <input
               type="password"
               className="input-field"
               required
-              placeholder="Create a password"
+              minLength={6}
+              placeholder="At least 6 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="btn btn-primary login-submit-btn" disabled={loading}>
-            {loading ? 'Signing Up...' : `Sign Up as ${role === 'seeker' ? 'Job Seeker' : 'Employer'}`}
+          <button
+            type="submit"
+            className="btn btn-primary login-submit-btn"
+            disabled={loading || !fullName || !email || password.length < 6}
+          >
+            {loading ? (
+              <>
+                <span className="loading-spinner"></span>
+                Signing Up...
+              </>
+            ) : (
+              `Sign Up as ${role === 'seeker' ? 'Job Seeker' : 'Employer'}`
+            )}
           </button>
         </form>
 
         <div className="login-footer">
-          <p>Already have an account? <Link to="/login">Log in</Link></p>
+          <p>
+            Already have an account? <Link to="/login">Log in</Link>
+          </p>
         </div>
       </div>
     </div>
