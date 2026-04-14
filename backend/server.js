@@ -20,15 +20,29 @@ const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) return;
   
   if (!process.env.MONGODB_URI) {
-    console.error('ERROR: MONGODB_URI is not defined');
+    console.error('ERROR: MONGODB_URI is not defined in environment variables');
     return;
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+    });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {
-    console.error('MongoDB connection error:', err);
+    console.error('--- MongoDB Connection Error ---');
+    if (err.name === 'MongoAuthenticationError') {
+      console.error('ERROR: Authentication failed. Please check your database username and password in MONGODB_URI.');
+    } else if (err.name === 'MongoServerSelectionError') {
+      console.error('ERROR: Could not connect to any server. This is often caused by:');
+      console.error('1. IP Whitelist issues (Ensure 0.0.0.0/0 is allowed in Atlas)');
+      console.error('2. Network connectivity problems');
+    } else if (err.name === 'MongoNetworkError') {
+      console.error('ERROR: Network error. Please check your internet connection.');
+    } else {
+      console.error(`ERROR: ${err.message}`);
+    }
+    console.error('---------------------------------');
   }
 };
 
