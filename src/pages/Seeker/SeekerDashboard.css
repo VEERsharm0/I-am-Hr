@@ -1,0 +1,100 @@
+.seeker-dashboard {
+  min-height: calc(100vh - 80px);
+}
+
+.dashboard-sections-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 992px) {
+  .dashboard-sections-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.applications-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.application-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--bg-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s;
+}
+
+.application-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.application-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background-color: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.application-details {
+  flex: 1;
+}
+
+.application-details h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.05rem;
+}
+
+.application-details h4 a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.application-details h4 a:hover {
+  color: var(--primary);
+}
+
+.application-status {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.empty-state-sm {
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--bg-color);
+  border-radius: 12px;
+  border: 1px dashed var(--border-color);
+}
+
+.saved-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.status-badge.success {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
+}
+
+.status-badge.pending {
+  background-color: rgba(243, 156, 18, 0.15);
+  color: #d35400;
+}

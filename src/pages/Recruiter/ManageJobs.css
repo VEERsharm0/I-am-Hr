@@ -1,0 +1,130 @@
+.manage-jobs-page {
+  min-height: calc(100vh - 80px);
+}
+
+.manage-jobs-content {
+  padding: 1.5rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  background-color: var(--bg-color);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.jobs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.jobs-table th,
+.jobs-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.jobs-table th {
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.job-title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.job-title-col strong {
+  font-size: 1.05rem;
+  color: var(--text-color);
+}
+
+.applications-count {
+  display: flex;
+  flex-direction: column;
+}
+
+.applications-count strong {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons .btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-buttons .btn-icon:hover {
+  background-color: var(--bg-color);
+  color: var(--primary);
+}
+
+.action-buttons .btn-icon.delete:hover {
+  color: var(--error, #e74c3c);
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Status variants */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
+}
+
+.status-badge.closed {
+  background-color: rgba(149, 165, 166, 0.15);
+  color: #7f8c8d;
+}
+
+.status-badge.draft {
+  background-color: rgba(243, 156, 18, 0.15);
+  color: #d35400;
+}
