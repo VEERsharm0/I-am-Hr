@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -14,23 +14,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Health Check (Always available, even if DB is down)
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    env: {
-      mongodb: !!process.env.MONGODB_URI,
-      jwt: !!process.env.JWT_SECRET
-    }
-  });
-});
-
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/jobs', jobRoutes);
-app.use('/api/applications', applicationRoutes);
 
 // Database Connection Logic for Serverless
 const connectDB = async () => {
@@ -55,6 +38,23 @@ app.use(async (req, res, next) => {
     await connectDB();
   }
   next();
+});
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/applications', applicationRoutes);
+
+// Health Check (Always available, even if DB is down)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    env: {
+      mongodb: !!process.env.MONGODB_URI,
+      jwt: !!process.env.JWT_SECRET
+    }
+  });
 });
 
 // For local development
