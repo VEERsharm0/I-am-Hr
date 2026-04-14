@@ -15,15 +15,47 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health Check (Always available, even if DB is down)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    env: {
+      mongodb: !!process.env.MONGODB_URI,
+      jwt: !!process.env.JWT_SECRET
+    }
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 
-// Database Connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// Database Connection Logic for Serverless
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+  
+  if (!process.env.MONGODB_URI) {
+    console.error('ERROR: MONGODB_URI is not defined');
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+  }
+};
+
+// Global middleware to ensure DB is connected for API routes
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api') && req.path !== '/api/health') {
+    await connectDB();
+  }
+  next();
+});
 
 // For local development
 if (require.main === module) {
